@@ -1,0 +1,27 @@
+{
+  "name": "make-hdd-image",
+  "version": "1.0.0",
+  "description": "Electron 기반 HDD 원시(raw) 이미지 생성 도구 (불량 섹터 / EISDIR 대응)",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test:engine": "node test/engine-test.js",
+    "dist": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "local.makehddimage",
+    "productName": "MakeHDDImage",
+    "files": [
+      "src/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "requestedExecutionLevel": "requireAdministrator"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.1.0",
+    "electron-builder": "^26.18.0"
+  }
+}

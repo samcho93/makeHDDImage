@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+  <title>MakeHDDImage</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>MakeHDDImage</h1>
+    <span class="sub">물리 디스크 → 이미지 파일 (불량 섹터 건너뛰기 지원)</span>
+  </header>
+
+  <div id="adminBanner" class="banner hidden">
+    <span>원시 디스크(\\.\PhysicalDriveN)를 읽으려면 관리자 권한이 필요합니다.</span>
+    <button id="btnAdmin">관리자 권한으로 다시 실행</button>
+  </div>
+
+  <main>
+    <section>
+      <div class="sec-head">
+        <h2>1. 원본 디스크</h2>
+        <button id="btnRefresh" class="ghost">새로고침</button>
+      </div>
+      <div id="diskList" class="disk-list"><div class="muted">디스크 조회 중...</div></div>
+    </section>
+
+    <section>
+      <h2>2. 저장 위치 / 형식</h2>
+      <div class="row">
+        <label for="format">형식</label>
+        <select id="format">
+          <option value="raw-sparse">Raw .img (스파스 – 빈 영역은 공간 차지 안 함)</option>
+          <option value="raw">Raw .img (전체 기록)</option>
+          <option value="gz">Gzip 압축 .img.gz</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="outPath">파일</label>
+        <input id="outPath" type="text" placeholder="저장할 이미지 파일 경로" spellcheck="false">
+        <button id="btnBrowse">찾아보기</button>
+      </div>
+      <div id="outInfo" class="hint"></div>
+      <label id="resumeWrap" class="check hidden"><input id="resume" type="checkbox"> <span id="resumeText"></span></label>
+    </section>
+
+    <section>
+      <h2>3. 옵션</h2>
+      <div class="opts">
+        <label>읽기 단위
+          <select id="chunk">
+            <option value="1">1 MiB</option>
+            <option value="4" selected>4 MiB</option>
+            <option value="8">8 MiB</option>
+            <option value="16">16 MiB</option>
+          </select>
+        </label>
+        <label>재시도 횟수
+          <input id="retries" type="number" min="0" max="10" value="2">
+        </label>
+        <label title="64KiB 블록 안에서 연속으로 이만큼 실패하면 블록 나머지를 0으로 채우고 건너뜀 (0 = 끝까지 섹터 단위 시도)">연속 불량 시 건너뛰기
+          <input id="skipAfter" type="number" min="0" max="128" value="64">
+        </label>
+        <label class="check"><input id="hash" type="checkbox" checked> SHA-256 계산</label>
+      </div>
+    </section>
+
+    <section>
+      <div class="actions">
+        <button id="btnStart" class="primary" disabled>이미지 생성 시작</button>
+        <button id="btnCancel" class="danger hidden">중지</button>
+        <button id="btnShow" class="ghost hidden">폴더 열기</button>
+      </div>
+      <div class="progress"><div id="bar"></div></div>
+      <div class="stats">
+        <div><span class="k">진행</span><span id="stPct">-</span></div>
+        <div><span class="k">처리량</span><span id="stBytes">-</span></div>
+        <div><span class="k">속도</span><span id="stSpeed">-</span></div>
+        <div><span class="k">남은 시간</span><span id="stEta">-</span></div>
+        <div><span class="k">불량 섹터</span><span id="stBad">0</span></div>
+        <div><span class="k">백엔드</span><span id="stBackend">-</span></div>
+      </div>
+    </section>
+
+    <section class="grow">
+      <h2>로그</h2>
+      <div id="log" class="log"></div>
+    </section>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>

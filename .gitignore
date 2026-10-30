@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.img
+*.img.gz
+*.resume.json
+*.report.txt
